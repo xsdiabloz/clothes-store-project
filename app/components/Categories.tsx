@@ -9,7 +9,7 @@ import {
   Hand,
   Venus,
 } from "lucide-react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const categories = [
   {
@@ -58,9 +58,12 @@ const Categories = () => {
   const searchParams = useSearchParams();
   const selectedCategory = searchParams.get("category");
   const router = useRouter();
+  const pathName = usePathname();
 
   const handleChange = (val: string | null) => {
-    router.push(`/?category=${val}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("category", val || "all");
+    router.push(`${pathName}?${params.toString()}`, { scroll: false });
   };
 
   return (
