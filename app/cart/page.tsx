@@ -1,13 +1,9 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import type {
-  CartItemType,
-  ShippingFormInputs,
-  ShoppingCartTypes,
-} from "../types";
+import type { CartItemType, ShoppingCartTypes } from "../types";
 import { ArrowRight, Trash2 } from "lucide-react";
-import ShippingForm from "../components/ShippingForm";
+import ShippingForm, { ShippingFormInputs } from "../components/ShippingForm";
 import { useState } from "react";
 import PaymentForm from "../components/PaymentForm";
 import Image from "next/image";

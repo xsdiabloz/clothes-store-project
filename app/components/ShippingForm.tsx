@@ -1,8 +1,22 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { ShippingFormInputs, shippingFormSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import z from "zod";
+
+const shippingFormSchema = z.object({
+  name: z.string().min(1, "Name is required!"),
+  email: z.email().min(1, "Email is required!"),
+  phone: z
+    .string()
+    .min(7, "Phone number must be between 7 and 10 digits!")
+    .max(10, "Phone number must be between 7 and 10 digits!")
+    .regex(/^\d+$/, "Phone number must contain only numbers!"),
+  address: z.string().min(1, "Address is required!"),
+  city: z.string().min(1, "City is required!"),
+});
+
+export type ShippingFormInputs = z.infer<typeof shippingFormSchema>;
 
 const ShippingForm = ({
   setShippingForm,

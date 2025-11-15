@@ -18,11 +18,17 @@ const product: ProductType = {
   },
 };
 
-const ProductPage = ({searchParams}: {searchParams:Promise<{color:string; size:string}>}) => {
+const ProductPage = ({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ color: string; size: string }>;
+}) => {
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
       <div className="w-full lg:w-5/12">
-        <Image src={product.images[]} />
+        {/* <Image src={product.images[]} /> */}
       </div>
       <div className="w-full lg:w-7/12"></div>
     </div>

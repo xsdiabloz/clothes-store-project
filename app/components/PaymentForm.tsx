@@ -1,9 +1,26 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { PaymentFormInputs, paymentFormSchema } from "../types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, ShoppingCartIcon } from "lucide-react";
+import { ShoppingCartIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import z from "zod";
+
+const paymentFormSchema = z.object({
+  cardHolder: z.string().min(1, "Card holder is required!"),
+  cardNumber: z
+    .string()
+    .min(16, "Card Number is required!")
+    .max(16, "Card Number is required!"),
+  expirationDate: z
+    .string()
+    .regex(
+      /^(0[1-9]|1[0-2])\/\d{2}$/,
+      "Expiration Date must be in MM/YY format !"
+    ),
+  cvv: z.string().min(3, "CVV is required!").max(3, "CVV is required!"),
+});
+
+export type PaymentFormInputs = z.infer<typeof paymentFormSchema>;
 
 const PaymentForm = () => {
   const {
