@@ -1,3 +1,5 @@
+import z from "zod";
+
 export type ProductType = {
   id: string | number;
   name: string;
@@ -18,4 +20,15 @@ export type CartItemType = ProductType & {
   quantity: number;
   selectedSize: string;
   selectedColor: string;
+};
+
+export type CartStoreType = {
+  cart: CartItemType[];
+  hasHydrated: boolean | undefined;
+};
+
+export type CartStoreActionsType = {
+  addToCart: (product: CartItemType) => void;
+  removeFromCart: (product: CartItemType) => void;
+  clearCart: () => void;
 };

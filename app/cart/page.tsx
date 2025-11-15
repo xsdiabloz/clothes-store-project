@@ -2,10 +2,12 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import type { CartItemType, ShoppingCartTypes } from "../types";
-import { ArrowRight } from "lucide-react";
-import ShippingForm from "../components/ShippingForm";
+import { ArrowRight, Trash2 } from "lucide-react";
+import ShippingForm, { ShippingFormInputs } from "../components/ShippingForm";
 import { useState } from "react";
 import PaymentForm from "../components/PaymentForm";
+import Image from "next/image";
+import useCartStore from "../stores/cartStore";
 
 const steps: ShoppingCartTypes[] = [
   { id: 1, title: "Shopping Cart" },
@@ -70,11 +72,13 @@ const cartItems: CartItemType[] = [
 ];
 
 const CartPage = () => {
-  const [shippingForm, setShippingForm] = useState<null>(null);
+  const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const activeStep = parseInt(searchParams.get("step") || "1");
+
+  const { cart, removeFromCart } = useCartStore();
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center mt-12">
@@ -107,9 +111,46 @@ const CartPage = () => {
       <div className="flex w-full flex-col lg:flex-row gap-16">
         <div className="w-full lg:w-7/12 shadow-lg border-gray-100 rounded-lg p-8 flex flex-col gap-8">
           {activeStep === 1 ? (
-            "products"
+            cart.map((item) => (
+              <div
+                className="flex items-center justify-between"
+                key={item.id + item.selectedSize + item.selectedColor}
+              >
+                <div className="flex gap-8">
+                  <div className="relative w-32 h-32 bg-gray-50 rounded-lg overflow-hidden">
+                    <Image
+                      className="object-contain"
+                      src={item.images[item.selectedColor]}
+                      alt="item image"
+                      fill
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-medium">{item.name}</p>
+                      <p className="text-xs text-gray-500">
+                        Quantity: {item.quantity}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Size: {item.selectedSize.toUpperCase()}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Color: {item.selectedColor}
+                      </p>
+                    </div>
+                    <p className="font-medium">${item.price.toFixed(2)}</p>
+                  </div>
+                </div>
+                <button className="w-8 h-8 hover:bg-red-200 duration-300 transition-all rounded-full bg-red-100 text-red-400 cursor-pointer flex items-center justify-center">
+                  <Trash2
+                    onClick={() => removeFromCart(item)}
+                    className="h-4 w-4"
+                  />
+                </button>
+              </div>
+            ))
           ) : activeStep === 2 ? (
-            <ShippingForm />
+            <ShippingForm setShippingForm={setShippingForm} />
           ) : activeStep === 3 && shippingForm ? (
             <PaymentForm />
           ) : (
@@ -118,14 +159,14 @@ const CartPage = () => {
             </p>
           )}
         </div>
-        <div className="w-full lg:w-5/12 shadow-lg border-gray-100 rounded-lg p-8 flex flex-col gap-8">
+        <div className="w-full lg:w-5/12 shadow-lg border-gray-100 rounded-lg p-8 flex flex-col gap-8 h-max">
           <h2 className="font-semibold">Cart Detailes</h2>
           <div className="flex flex-col gap-4">
             <div className="flex justify-between text-sm">
               <p className="text-gray-500">Subtotal</p>
               <p className="font-medium">
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>
@@ -143,7 +184,7 @@ const CartPage = () => {
               <p className="text-gray-900 font-semibold">Total</p>
               <p className="font-medium">
                 $
-                {cartItems
+                {cart
                   .reduce((acc, item) => acc + item.price * item.quantity, 0)
                   .toFixed(2)}
               </p>

@@ -22,8 +22,8 @@ const Navbar = () => {
       </Link>
       <div className="flex items-center gap-6">
         <SearchBar />
-        <Link href="/">
-          <Home className="w-4 h-4 text-gray-600" />
+        <Link href="/" className="hover:border-gray-500">
+          <Home className="w-4 h-4 text-gray-600 " />
         </Link>
         <Bell className="w-4 h-4 text-gray-600" />
         <ShoppingCartIcon />
